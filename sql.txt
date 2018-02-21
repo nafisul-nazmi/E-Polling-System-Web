@@ -1,0 +1,33 @@
+CREATE TABLE `eps`.`admins` ( `username` VARCHAR(100) NOT NULL, `password` VARCHAR(100) NOT NULL , PRIMARY KEY (`username`)) ENGINE = InnoDB;
+
+CREATE TABLE `eps`.`districts` ( `did` INT NOT NULL AUTO_INCREMENT , `dname` VARCHAR(100) NOT NULL , PRIMARY KEY (`did`)) ENGINE = InnoDB;
+
+ALTER TABLE `districts` ADD UNIQUE(`dname`);
+
+CREATE TABLE `eps`.`seats` ( `sid` INT NOT NULL AUTO_INCREMENT, `did` INT NOT NULL , `sname` VARCHAR(100) NOT NULL , PRIMARY KEY (`sid`), UNIQUE (`sname`)) ENGINE = InnoDB;
+
+ALTER TABLE `seats` ADD FOREIGN KEY (`did`) REFERENCES `districts`(`did`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE TABLE `eps`.`centers` ( `cid` INT NOT NULL AUTO_INCREMENT, `sid` INT NOT NULL , `cname` VARCHAR(200) NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`cid`)) ENGINE = InnoDB;
+
+ALTER TABLE `centers` ADD FOREIGN KEY (`sid`) REFERENCES `seats`(`sid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE TABLE `eps`.`users` ( `cid` INT NOT NULL , `password` VARCHAR(100) NOT NULL ) ENGINE = InnoDB;
+
+ALTER TABLE `users` ADD FOREIGN KEY (`cid`) REFERENCES `centers`(`cid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE TABLE `eps`.`voters` ( `nid` BIGINT NOT NULL , `cid` INT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`nid`)) ENGINE = InnoDB;
+
+ALTER TABLE `voters` ADD FOREIGN KEY (`cid`) REFERENCES `centers`(`cid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+CREATE TABLE `eps`.`teams` ( `tid` INT NOT NULL AUTO_INCREMENT, `tname` VARCHAR(200) NOT NULL , `symbol` VARCHAR(200) NOT NULL , `obtainedseats` INT NOT NULL , PRIMARY KEY (`tid`)) ENGINE = InnoDB;
+
+ALTER TABLE `centers` ADD `password` VARCHAR(100) NOT NULL ;
+
+ALTER TABLE `candidates` CHANGE `obtainedseats` `obtainedvotes` INT(11) NOT NULL;
+
+
+CREATE TABLE `eps`.`candidates` ( `cnid` INT NOT NULL AUTO_INCREMENT , `tid` INT NOT NULL , `sid` INT NOT NULL , `cname` VARCHAR(100) NOT NULL , `obtainedseats` INT NOT NULL , PRIMARY KEY (`cnid`)) ENGINE = InnoDB;
+
+ALTER TABLE `candidates` ADD FOREIGN KEY (`tid`) REFERENCES `teams`(`tid`) ON DELETE RESTRICT ON UPDATE RESTRICT; ALTER TABLE `candidates` ADD FOREIGN KEY (`sid`) REFERENCES `seats`(`sid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
